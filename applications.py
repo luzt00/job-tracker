@@ -46,6 +46,22 @@ if "df" not in st.session_state:
 
 df = st.session_state.df
 
+# Estado options
+estado_options = [
+    "1 email",
+    "2 emails",
+    "Chamada",
+    "Nota",
+    "Email + Chamada",
+    "Email + Nota",
+    "Chamada + Nota",
+    "Sem resposta",
+    "Outro"
+]
+
+# ----------------------
+# 🏫 App Title
+# ----------------------
 st.title("🏫 Contato com Colégios")
 
 # ----------------------
@@ -61,7 +77,7 @@ with st.form("add_form"):
     local = st.text_input("Local")
     valencias = st.text_input("Valências")
     acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"])
-    estado = st.text_area("Estado")
+    estado = st.selectbox("Estado", estado_options)
 
     submitted = st.form_submit_button("Adicionar")
     if submitted:
@@ -100,7 +116,7 @@ if not df.empty:
         edit_local = st.text_input("Local", value=row["Local"])
         edit_valencias = st.text_input("Valências", value=row["Valências"])
         edit_acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"], index=["SIM", "NÃO"].index(row["Acordo Ordem"]))
-        edit_estado = st.text_area("Estado", value=row["Estado"])
+        edit_estado = st.selectbox("Estado", estado_options, index=estado_options.index(row["Estado"]) if row["Estado"] in estado_options else len(estado_options) - 1)
 
         save = st.form_submit_button("💾 Guardar Alterações")
         if save:
