@@ -11,13 +11,13 @@ def check_password():
             st.session_state["authenticated"] = True
         else:
             st.session_state["authenticated"] = False
-            st.error("❌ Incorrect password")
+            st.error("❌ Palavra-passe incorreta")
 
     if "authenticated" not in st.session_state:
-        st.text_input("🔐 Enter password", type="password", on_change=password_entered, key="password")
+        st.text_input("🔐 Introduza a palavra-passe", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["authenticated"]:
-        st.text_input("🔐 Enter password", type="password", on_change=password_entered, key="password")
+        st.text_input("🔐 Introduza a palavra-passe", type="password", on_change=password_entered, key="password")
         return False
     else:
         return True
@@ -41,7 +41,7 @@ st.markdown("""
         margin-top: 1rem;
     }
     h1 {
-        background: #2563eb;
+        background: #5fa8d3;
         color: white;
         padding: 0.75rem 1rem;
         border-radius: 8px;
@@ -89,12 +89,12 @@ estado_options = [
 # ----------------------
 # 🏫 App Title
 # ----------------------
-st.title("🏫 Contato com Colégios")
+st.title("🏫 Contacto com Colégios")
 
 # ----------------------
-# ➕ Adicionar Novo Colégio
+# ➕ Adicionar Novo Contacto
 # ----------------------
-st.header("➕ Adicionar Novo Contato")
+st.header("➕ Adicionar Novo Contacto")
 
 with st.form("add_form"):
     colegio = st.text_input("Colégio")
@@ -126,9 +126,9 @@ with st.form("add_form"):
         st.success(f"✅ Registo adicionado para {colegio}")
 
 # ----------------------
-# ✏️ Editar Colégio Existente
+# ✏️ Editar Contacto Existente
 # ----------------------
-st.header("✏️ Editar Contato Existente")
+st.header("✏️ Editar Contacto Existente")
 
 if not df.empty:
     selected_index = st.selectbox(
@@ -165,6 +165,27 @@ if not df.empty:
             }
             st.session_state.df.to_csv(CSV_FILE, index=False)
             st.success(f"✅ Atualizado: {edit_colegio}")
+
+# ----------------------
+# 🗑️ Eliminar Contacto
+# ----------------------
+st.header("🗑️ Eliminar Contacto")
+
+if not df.empty:
+    delete_index = st.selectbox(
+        "Selecionar colégio para eliminar",
+        df.index,
+        format_func=lambda i: f"{df.loc[i, 'Colégio']} – {df.loc[i, 'Local']}",
+        key="delete_selector"
+    )
+
+    delete_confirm = st.button("❌ Eliminar Este Registo")
+
+    if delete_confirm:
+        deleted_name = df.loc[delete_index, "Colégio"]
+        st.session_state.df = df.drop(delete_index).reset_index(drop=True)
+        st.session_state.df.to_csv(CSV_FILE, index=False)
+        st.success(f"🗑️ Registo eliminado: {deleted_name}")
 
 # ----------------------
 # 📄 Visualizar Tabela
