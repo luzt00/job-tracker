@@ -60,6 +60,29 @@ estado_options = [
 # 🏫 App Title
 # ----------------------
 st.title("🏫 Contato com Colégios")
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f9f9fc;
+        padding: 1rem;
+        border-radius: 10px;
+    }
+    .stApp {
+        background-color: #f0f2f6;
+    }
+    .stMarkdown h1 {
+        background: #2563eb;
+        color: white;
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    .css-1avcm0n.e16nr0p30 {  /* success message color fix */
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        border-left: 5px solid #10b981;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # ----------------------
 # ➕ Adicionar Novo Colégio
