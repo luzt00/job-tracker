@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-import streamlit as st
-
+# ----------------------
+# 🔐 Password Protection
+# ----------------------
 def check_password():
     def password_entered():
         if st.session_state["password"] == "patchestagio":
@@ -24,14 +25,13 @@ def check_password():
 if not check_password():
     st.stop()
 
-
+# ----------------------
+# 📦 Load or Initialize Data
+# ----------------------
 CSV_FILE = "applications.csv"
 
-# --------------------------------------
-# 📦 Load or Initialize Data
-# --------------------------------------
 def load_data():
-    columns = ["Company", "Role", "Date Applied", "Status", "Response Date", "Last Contact", "Notes"]
+    columns = ["Colégio", "Último Contacto", "Psicólogo", "Diretor/a", "Local", "Valências", "Acordo Ordem", "Estado"]
     try:
         df = pd.read_csv(CSV_FILE)
         for col in columns:
@@ -46,89 +46,79 @@ if "df" not in st.session_state:
 
 df = st.session_state.df
 
-st.title("📋 Job Application Tracker")
+st.title("🏫 Contato com Colégios")
 
-# --------------------------------------
-# ➕ Add New Application
-# --------------------------------------
-st.header("➕ Add New Application")
+# ----------------------
+# ➕ Adicionar Novo Colégio
+# ----------------------
+st.header("➕ Adicionar Novo Contato")
 
-with st.form("Add New"):
-    company = st.text_input("Company")
-    role = st.text_input("Role")
-    date_applied = st.date_input("Date Applied", datetime.today())
-    status = st.selectbox("Status", ["Applied", "Interviewing", "Rejected", "Offer"])
-    response_received = st.checkbox("Received a response?")
-    response_date = st.date_input("Response Date", datetime.today()) if response_received else ""
-    last_contact = st.date_input("Last Contact", datetime.today())
-    notes = st.text_area("Notes")
+with st.form("add_form"):
+    colegio = st.text_input("Colégio")
+    ultimo_contacto = st.date_input("Último Contacto", datetime.today())
+    psicologo = st.text_input("Psicólogo")
+    diretor = st.text_input("Diretor/a")
+    local = st.text_input("Local")
+    valencias = st.text_input("Valências")
+    acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"])
+    estado = st.text_area("Estado")
 
-    submitted = st.form_submit_button("Add Application")
+    submitted = st.form_submit_button("Adicionar")
     if submitted:
         new_row = {
-            "Company": company,
-            "Role": role,
-            "Date Applied": date_applied,
-            "Status": status,
-            "Response Date": response_date,
-            "Last Contact": last_contact,
-            "Notes": notes
+            "Colégio": colegio,
+            "Último Contacto": ultimo_contacto,
+            "Psicólogo": psicologo,
+            "Diretor/a": diretor,
+            "Local": local,
+            "Valências": valencias,
+            "Acordo Ordem": acordo,
+            "Estado": estado
         }
         st.session_state.df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         st.session_state.df.to_csv(CSV_FILE, index=False)
-        st.success(f"✅ Added application for {company}")
+        st.success(f"✅ Registo adicionado para {colegio}")
 
-# --------------------------------------
-# ✏️ Edit Existing Application
-# --------------------------------------
-st.header("✏️ Edit Existing Application")
+# ----------------------
+# ✏️ Editar Colégio Existente
+# ----------------------
+st.header("✏️ Editar Contato Existente")
 
 if not df.empty:
     selected_index = st.selectbox(
-        "Select an application to edit",
+        "Selecionar colégio para editar",
         df.index,
-        format_func=lambda i: f"{df.loc[i, 'Company']} – {df.loc[i, 'Role']}"
+        format_func=lambda i: f"{df.loc[i, 'Colégio']} – {df.loc[i, 'Local']}"
     )
     row = df.loc[selected_index]
 
-    with st.form("Edit Application"):
-        edit_company = st.text_input("Company", value=row["Company"])
-        edit_role = st.text_input("Role", value=row["Role"])
-        edit_date_applied = st.date_input(
-            "Date Applied", 
-            datetime.strptime(str(row["Date Applied"]), "%Y-%m-%d")
-        )
-        edit_status = st.selectbox(
-            "Status", 
-            ["Applied", "Interviewing", "Rejected", "Offer"],
-            index=["Applied", "Interviewing", "Rejected", "Offer"].index(row["Status"])
-        )
-        edit_response_date = st.date_input(
-            "Response Date",
-            value=datetime.strptime(str(row["Response Date"]), "%Y-%m-%d") if pd.notnull(row["Response Date"]) and row["Response Date"] else datetime.today()
-        )
-        edit_last_contact = st.date_input(
-            "Last Contact",
-            value=datetime.strptime(str(row["Last Contact"]), "%Y-%m-%d") if pd.notnull(row["Last Contact"]) and row["Last Contact"] else datetime.today()
-        )
-        edit_notes = st.text_area("Notes", value=row["Notes"])
+    with st.form("edit_form"):
+        edit_colegio = st.text_input("Colégio", value=row["Colégio"])
+        edit_ultimo = st.date_input("Último Contacto", datetime.strptime(str(row["Último Contacto"]), "%Y-%m-%d"))
+        edit_psicologo = st.text_input("Psicólogo", value=row["Psicólogo"])
+        edit_diretor = st.text_input("Diretor/a", value=row["Diretor/a"])
+        edit_local = st.text_input("Local", value=row["Local"])
+        edit_valencias = st.text_input("Valências", value=row["Valências"])
+        edit_acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"], index=["SIM", "NÃO"].index(row["Acordo Ordem"]))
+        edit_estado = st.text_area("Estado", value=row["Estado"])
 
-        save_edit = st.form_submit_button("💾 Save Changes")
-        if save_edit:
+        save = st.form_submit_button("💾 Guardar Alterações")
+        if save:
             st.session_state.df.loc[selected_index] = {
-                "Company": edit_company,
-                "Role": edit_role,
-                "Date Applied": edit_date_applied,
-                "Status": edit_status,
-                "Response Date": edit_response_date,
-                "Last Contact": edit_last_contact,
-                "Notes": edit_notes
+                "Colégio": edit_colegio,
+                "Último Contacto": edit_ultimo,
+                "Psicólogo": edit_psicologo,
+                "Diretor/a": edit_diretor,
+                "Local": edit_local,
+                "Valências": edit_valencias,
+                "Acordo Ordem": edit_acordo,
+                "Estado": edit_estado
             }
             st.session_state.df.to_csv(CSV_FILE, index=False)
-            st.success(f"✅ Updated application for {edit_company}")
+            st.success(f"✅ Atualizado: {edit_colegio}")
 
-# --------------------------------------
-# 📊 View All Applications
-# --------------------------------------
-st.header("📄 Applications Overview")
+# ----------------------
+# 📄 Visualizar Tabela
+# ----------------------
+st.header("📊 Lista de Colégios")
 st.dataframe(st.session_state.df)
