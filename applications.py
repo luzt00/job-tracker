@@ -77,11 +77,8 @@ with st.form("add_form"):
     acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"])
 
     estado_selection = st.selectbox("Estado", estado_options)
-    if estado_selection == "Outro":
-        custom_estado = st.text_input("Especifique o Estado")
-        estado = custom_estado
-    else:
-        estado = estado_selection
+    custom_estado = st.text_input("Especifique o Estado", disabled=(estado_selection != "Outro"))
+    estado = custom_estado if estado_selection == "Outro" else estado_selection
 
     submitted = st.form_submit_button("Adicionar")
     if submitted:
@@ -123,12 +120,8 @@ if not df.empty:
 
         default_index = estado_options.index(row["Estado"]) if row["Estado"] in estado_options else len(estado_options) - 1
         estado_selection = st.selectbox("Estado", estado_options, index=default_index)
-
-        if estado_selection == "Outro":
-            custom_estado = st.text_input("Especifique o Estado", value=row["Estado"] if row["Estado"] not in estado_options else "")
-            edit_estado = custom_estado
-        else:
-            edit_estado = estado_selection
+        custom_estado = st.text_input("Especifique o Estado", value=row["Estado"] if estado_selection == "Outro" else "", disabled=(estado_selection != "Outro"))
+        edit_estado = custom_estado if estado_selection == "Outro" else estado_selection
 
         save = st.form_submit_button("💾 Guardar Alterações")
         if save:
