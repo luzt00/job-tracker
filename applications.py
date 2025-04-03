@@ -53,8 +53,7 @@ estado_options = [
     "Chamada",
     "Email + Chamada",
     "Email + Nota",
-    "Chamada + Nota",
-    "Outro"
+    "Chamada + Nota"
 ]
 
 # ----------------------
@@ -76,15 +75,9 @@ with st.form("add_form"):
     valencias = st.text_input("Valências")
     acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"])
 
-    if "estado_selection" not in st.session_state:
-        st.session_state.estado_selection = estado_options[0]
-
-    estado_selection = st.selectbox("Estado", estado_options, key="estado_selection")
-
-    if estado_selection == "Outro":
-        estado = st.text_input("Especifique o Estado", key="custom_estado")
-    else:
-        estado = estado_selection
+    estado_dropdown = st.selectbox("Estado (opcional)", estado_options)
+    estado_custom = st.text_input("Especifique o Estado (ou substitua)")
+    estado = estado_custom if estado_custom else estado_dropdown
 
     submitted = st.form_submit_button("Adicionar")
     if submitted:
@@ -124,13 +117,9 @@ if not df.empty:
         edit_valencias = st.text_input("Valências", value=row["Valências"])
         edit_acordo = st.selectbox("Acordo Ordem", ["SIM", "NÃO"], index=["SIM", "NÃO"].index(row["Acordo Ordem"]))
 
-        default_index = estado_options.index(row["Estado"]) if row["Estado"] in estado_options else len(estado_options) - 1
-        estado_selection = st.selectbox("Estado", estado_options, index=default_index, key="edit_estado_selection")
-
-        if estado_selection == "Outro":
-            edit_estado = st.text_input("Especifique o Estado", value=row["Estado"] if row["Estado"] not in estado_options else "", key="edit_custom_estado")
-        else:
-            edit_estado = estado_selection
+        estado_dropdown = st.selectbox("Estado (opcional)", estado_options, index=estado_options.index(row["Estado"]) if row["Estado"] in estado_options else 0)
+        estado_custom = st.text_input("Especifique o Estado (ou substitua)", value=row["Estado"] if row["Estado"] not in estado_options else "")
+        edit_estado = estado_custom if estado_custom else estado_dropdown
 
         save = st.form_submit_button("💾 Guardar Alterações")
         if save:
