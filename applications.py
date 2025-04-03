@@ -26,24 +26,26 @@ if not check_password():
     st.stop()
 
 # ----------------------
-# 🌈 Inject CSS Styling
+# 🎨 CSS Styling
 # ----------------------
 st.markdown("""
     <style>
     .stApp {
-        background-color: #f0f2f6;
+        background-color: #e6f0ff;
     }
-    .main {
+    .block-container {
         background-color: #ffffff;
-        padding: 1rem;
+        padding: 2rem 3rem;
         border-radius: 12px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        margin-top: 1rem;
     }
     h1 {
         background: #2563eb;
         color: white;
         padding: 0.75rem 1rem;
         border-radius: 8px;
+        margin-bottom: 1rem;
     }
     .css-1avcm0n.e16nr0p30 {
         background-color: #d1fae5 !important;
